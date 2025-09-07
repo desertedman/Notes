@@ -5,7 +5,7 @@
 - [Basic Rendering](#basic-rendering)
   - [Creating a Window](#creating-a-window)
   - [Rendering a Triangle](#rendering-a-triangle)
-    - [Storing vertices](#storing-vertices)
+    - [Vertex Buffer Objects](#vertex-buffer-objects)
     - [Shaders](#shaders)
       - [Compiling Shaders](#compiling-shaders)
     - [Vertex Attributes](#vertex-attributes)
@@ -27,7 +27,7 @@
 
 ## Rendering a Triangle
 
-### Storing vertices
+### Vertex Buffer Objects
 
 - Vertex Buffer Objects (VBOs) store vertices in GPU memory
   - Typical structure is as follows:
@@ -188,6 +188,34 @@ Finally, vertex attribute must be enabled via `glEnableVertexAttribArray
   ```
 
 We have successfully drawn our first triangle!
+
+### Element Buffer Objects
+
+- Element Buffer Objects (EBOs) determine draw order of vertices
+- Example:
+
+  ```cpp
+  float vertices[] = {
+     0.5f,  0.5f, 0.0f,  // top right
+     0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f,  // bottom left
+    -0.5f,  0.5f, 0.0f   // top left
+  };
+  unsigned int indices[] = {  // note that we start from 0!
+      0, 1, 3,   // first triangle
+      1, 2, 3    // second triangle
+  };
+
+  // Initialization
+  unsigned int EBO;
+  glGenBuffers(1, &EBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+  ```
+
+- EBOs also get bound to VAOs via `glVertexAttribPointer`
+  - Note that you should unbind the VAO first and then the EBO, otherwise the VAO
+    will not have an EBO configured
 
 ## Further Information
 
