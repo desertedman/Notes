@@ -9,6 +9,7 @@
     - [Shaders](#shaders)
       - [Compiling Shaders](#compiling-shaders)
     - [Vertex Attributes](#vertex-attributes)
+      - [Vertex Array Objects](#vertex-array-objects)
   - [Further Information](#further-information)
   <!--toc:end-->
 
@@ -141,6 +142,8 @@ glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean
                       normalized, GLsizei stride, const GLvoid * pointer)
 ```
 
+- `glVertexAttribPointer` configures vertex attributes of previously bound VBO
+  via `glBindBuffer`
 - `index` specifies vertex attribute to configure. Corresponds to location of
   attribute in shader (ex. `layout (location = 0)`)
 - `size` refers to size of vertex attribute. Position is a `vec3` so it is
@@ -152,8 +155,39 @@ glVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean
 - `pointer` is offset/index of where the vertex attribute starts
   - Type of `pointer` is `void *`, so it must be casted via `(void *)0`
 
-- Finally, vertex attribute must be enabled via `glEnableVertexAttribArray
-(GLuint index)`, where `index` is location of attribute
+Finally, vertex attribute must be enabled via `glEnableVertexAttribArray
+(GLuint index)`, where `index` is location of attribute.
+
+#### Vertex Array Objects
+
+- Vertex Array Objects (VAOs) store state of vertex attributes
+  - Switching between different vertex data and attribute configurations can
+    easily be done via switching to different VAOs
+- VAOs are required to be bound, otherwise nothing will be drawn
+- VAOs store the following:
+  - Calls to `glEnableVertexAttribArray`/`glDisableVertexAttribArray`
+  - Vertex attribute configurations via `glVertexAttribPointer`
+  - VBOs associated with vertex attributes by calls to `glVertexAttribPointer`
+    - In other words, VBOs will be registered to VAOs by this call
+- Example:
+
+  ```cpp
+  unsigned int VAO;
+  glGenVertexArrays(1, &VAO);
+  glBindVertexArray(VAO);
+
+  // Bind VBO and and copy data into buffer...
+  // Set vertex attribute pointers via glVertexAttribPointer and glEnableVertexAttribArray...
+
+  // Render loop
+  while (rendering) {
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    // OpenGL draw function here...
+  }
+  ```
+
+We have successfully drawn our first triangle!
 
 ## Further Information
 
