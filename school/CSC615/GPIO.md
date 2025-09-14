@@ -1,6 +1,7 @@
 # GPIO
 
 <!--toc:start-->
+
 - [GPIO](#gpio)
   - [LED on a Pi](#led-on-a-pi)
   - [Pulse-Width Modulation](#pulse-width-modulation)
@@ -8,24 +9,25 @@
   - [Peripheral Communication](#peripheral-communication)
     - [Synchronous vs. Asynchronous](#synchronous-vs-asynchronous)
     - [Serial vs. Parallel Communication](#serial-vs-parallel-communication)
-    - [Serial Peripheral Interface (SPI)](#serial-peripheral-interface-spi)
-      - [SPI Specs](#spi-specs)
-      - [Clock Polarity and Clock Phase](#clock-polarity-and-clock-phase)
-      - [Slave Select](#slave-select)
-      - [How SPI Works - MOSI and MISO](#how-spi-works-mosi-and-miso)
-      - [SPI Data Transmission](#spi-data-transmission)
-      - [SPI Advantages](#spi-advantages)
-      - [SPI Disadvantages](#spi-disadvantages)
-    - [Inter-Integrated Circuit (I2C)](#inter-integrated-circuit-i2c)
-      - [Basics](#basics)
-      - [Messages](#messages)
-        - [Address Frame](#address-frame)
-        - [Data Frame](#data-frame)
-      - [I2C Specs](#i2c-specs)
-      - [I2C Data Transmission](#i2c-data-transmission)
-      - [I2C Advantages](#i2c-advantages)
-      - [I2C Disadvantages](#i2c-disadvantages)
-<!--toc:end-->
+  - [Serial Peripheral Interface (SPI)](#serial-peripheral-interface-spi)
+    - [SPI Specs](#spi-specs)
+    - [Clock Polarity and Clock Phase](#clock-polarity-and-clock-phase)
+    - [Slave Select](#slave-select)
+    - [How SPI Works - MOSI and MISO](#how-spi-works-mosi-and-miso)
+    - [SPI Data Transmission](#spi-data-transmission)
+    - [SPI Advantages](#spi-advantages)
+    - [SPI Disadvantages](#spi-disadvantages)
+  - [Inter-Integrated Circuit (I2C)](#inter-integrated-circuit-i2c)
+    - [Basics](#basics)
+    - [Messages](#messages)
+      - [Address Frame](#address-frame)
+      - [Data Frame](#data-frame)
+    - [I2C Specs](#i2c-specs)
+    - [I2C Data Transmission](#i2c-data-transmission)
+    - [I2C Advantages](#i2c-advantages)
+    - [I2C Disadvantages](#i2c-disadvantages)
+  - [End](#end)
+  <!--toc:end-->
 
 ## LED on a Pi
 
@@ -76,9 +78,9 @@
 - Parallel - Bits sent all at same time through separate wires
 - Serial - Bits sent one by one through single wire
 
-### Serial Peripheral Interface (SPI)
+## Serial Peripheral Interface (SPI)
 
-#### SPI Specs
+### SPI Specs
 
 - MOSI (Master Output/Slave Input) - Master -> Slave
 - MISO (Master Input/Slave Output) - Master <- Slave
@@ -101,13 +103,13 @@
 - Comm. is initiated by master, master configures and generates
   clock signal
 
-#### Clock Polarity and Clock Phase
+### Clock Polarity and Clock Phase
 
 - Clock polarity - Bits sampled on either rising or falling edge of cycle
 - Clock phase - Sampling occurs on either first or second edge of cycle,
   regardless of rising or falling
 
-#### Slave Select
+### Slave Select
 
 - Master selects slave by dropping line's voltage
 - Idle, non-transmitting slaves kept at high voltage
@@ -115,7 +117,7 @@
 - Single SS pin -> SS wire split in parallel to each slave (called _daisy chaining_)
   - All other pins connected via _daisy chaining_
 
-#### How SPI Works - MOSI and MISO
+### How SPI Works - MOSI and MISO
 
 - Data sent serially
 - Master -> Slave via MOSI
@@ -125,30 +127,30 @@
 - Data is sent to and from master and slave in reverse order, so that data is
   formatted the same on both ends
 
-#### SPI Data Transmission
+### SPI Data Transmission
 
 1. Master outputs clock signal
 2. Master drops desired slave's voltage
 3. Master -> Slave (MSB first) via MOSI, slave reads bits as received
 4. Slave -> Master (LSB first) via MISO
 
-#### SPI Advantages
+### SPI Advantages
 
 - No start/stop bits, data streamed continuously
 - No complicated slave addressing
 - Higher data transfer rate than I2C
 - Separate MISO/MOSI lines, data sent/received at same time
 
-#### SPI Disadvantages
+### SPI Disadvantages
 
 - Uses four wires (I2C and UARTs use two)
 - No received ack.
 - No error checking
 - Only one master
 
-### Inter-Integrated Circuit (I2C)
+## Inter-Integrated Circuit (I2C)
 
-#### Basics
+### Basics
 
 - Two-wire serial comm.
 - Must be connected to _serial data_ (SDA) and _serial clock_ (SCL) lines
@@ -158,7 +160,7 @@
   devices on bus
   - Multiple devices can be on I2C bus
 
-#### Messages
+### Messages
 
 - Data transferred in _messages_
   - Broken up into _frames_ of data
@@ -178,7 +180,7 @@
     - Stop condition
       - SDA switches low to high voltage _after_ SCL switches low to high
 
-##### Address Frame
+#### Address Frame
 
 - Address frame always first frame after start bit
   - Corresponding slave sends low voltage ACK to master
@@ -187,7 +189,7 @@
     - Master request data - R/W -> high voltage
 - Address frame -> R/W bit -> ACK bit
 
-##### Data Frame
+#### Data Frame
 
 - Always 8 bits long, MSB first
 - Followed by ACK/NACK bit
@@ -196,7 +198,7 @@
 - When finished, master sends stop condition to slave
   - SCL: low -> high, _then_ SDA: low -> high
 
-#### I2C Specs
+### I2C Specs
 
 | Specs              |                       |
 | ------------------ | --------------------- |
@@ -210,7 +212,7 @@
 | Max # of Masters   | Unlimited             |
 | Max # of Slaves    | 1008                  |
 
-#### I2C Data Transmission
+### I2C Data Transmission
 
 1. Master sends start condition to every slave via switching SDA high -> low _before_ SCL high -> low
 2. Master sends each slave address frame, along with R/W bit
@@ -219,6 +221,8 @@
 5. After each data frame, receiver returns ACK to sender
 6. To stop transmission, master sends stop condition
 
-#### I2C Advantages
+### I2C Advantages
 
-#### I2C Disadvantages
+### I2C Disadvantages
+
+## End

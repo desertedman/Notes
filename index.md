@@ -1,11 +1,12 @@
-# Jho's wiki
+# Index
 
 <!--toc:start-->
-- [Jho's wiki](#jhos-wiki)
+
+- [Index](#index)
   - [Graphics](#graphics)
   - [School](#school)
   - [Self-Study](#self-study)
-<!--toc:end-->
+  <!--toc:end-->
 
 ## Graphics
 

@@ -10,6 +10,7 @@
       - [Compiling Shaders](#compiling-shaders)
     - [Vertex Attributes](#vertex-attributes)
       - [Vertex Array Objects](#vertex-array-objects)
+    - [Element Buffer Objects](#element-buffer-objects)
   - [Further Information](#further-information)
   <!--toc:end-->
 
