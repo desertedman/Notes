@@ -1,12 +1,11 @@
 # Jho's wiki
 
 <!--toc:start-->
-
 - [Jho's wiki](#jhos-wiki)
   - [Graphics](#graphics)
   - [School](#school)
   - [Self-Study](#self-study)
-  <!--toc:end-->
+<!--toc:end-->
 
 ## Graphics
 
@@ -14,7 +13,7 @@
 
 ## School
 
-[[school/CSC615/GPIO]]
+[CSC615](school/CSC615/CSC615.md)
 
 ## Self-Study
 
