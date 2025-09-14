@@ -5,3 +5,4 @@
 <!--toc:end-->
 
 [[1. A Tour of Computer Systems]]
+[[2. Representing and Manipulating Information]]
