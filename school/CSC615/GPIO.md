@@ -87,14 +87,14 @@
 - SCLK (Clock) - Clock signal
 - SS/CS (Slave Select/Chip Select) - Master selects slave to send data to
 
-| Specs              |                           |
-| ------------------ | ------------------------- |
-| Wires Used         | 4                         |
-| Maximum Speed      | Up to 10 Mbps             |
-| Synch              | Synchronous               |
-| Serial or Parallel | Serial                    |
-| Max # of Masters   | 1                         |
-| Max # of Slaves    | Theoretically unlimited\* |
+| Specs                  |                           |
+| ---------------------- | ------------------------- |
+| **Wires Used**         | 4                         |
+| **Maximum Speed**      | Up to 10 Mbps             |
+| **Synch**              | Synchronous               |
+| **Serial or Parallel** | Serial                    |
+| **Max # of Masters**   | 1                         |
+| **Max # of Slaves**    | Theoretically unlimited\* |
 
 \* In practice, number of slaves limited by load capacitance
 
@@ -200,17 +200,17 @@
 
 ### I2C Specs
 
-| Specs              |                       |
-| ------------------ | --------------------- |
-| Wires Used         | 2                     |
-| Maximum Speed      | Standard = 100 kbps   |
-|                    | Fast = 400 kbps       |
-|                    | High speed = 3.4 Mbps |
-|                    | Ultra fast = 5 Mbps   |
-| Synch              | Synchronous           |
-| Serial or Parallel | Serial                |
-| Max # of Masters   | Unlimited             |
-| Max # of Slaves    | 1008                  |
+| Specs                  |                       |
+| ---------------------- | --------------------- |
+| **Wires Used**         | 2                     |
+| **Maximum Speed**      | Standard = 100 kbps   |
+|                        | Fast = 400 kbps       |
+|                        | High speed = 3.4 Mbps |
+|                        | Ultra fast = 5 Mbps   |
+| **Synch**              | Synchronous           |
+| **Serial or Parallel** | Serial                |
+| **Max # of Masters**   | Unlimited             |
+| **Max # of Slaves**    | 1008                  |
 
 ### I2C Data Transmission
 
