@@ -26,6 +26,20 @@
     - [I2C Data Transmission](#i2c-data-transmission)
     - [I2C Advantages](#i2c-advantages)
     - [I2C Disadvantages](#i2c-disadvantages)
+  - [Universal Asynchronous Receiver/Transmitter (UART)](#universal-asynchronous-receivertransmitter-uart)
+    - [UART Basics](#uart-basics)
+    - [UART Specs](#uart-specs)
+    - [UART Transmission](#uart-transmission)
+      - [Sending Data](#sending-data)
+      - [Receiving Data](#receiving-data)
+      - [Data Packets](#data-packets)
+        - [Start Bit](#start-bit)
+        - [UART Data Frame](#uart-data-frame)
+        - [UART Parity](#uart-parity)
+        - [Stop Bit](#stop-bit)
+    - [UART Data Transmission](#uart-data-transmission)
+    - [UART Advantages](#uart-advantages)
+    - [UART Disadvantages](#uart-disadvantages)
   - [End](#end)
   <!--toc:end-->
 
@@ -124,7 +138,7 @@
   - MSB sent first
 - Slave -> Master via MISO
   LSB sent first
-- Data is sent to and from master and slave in reverse order, so that data is
+- Data is sent to and from master and slave in reverse order, so data is
   formatted the same on both ends
 
 ### SPI Data Transmission
@@ -223,6 +237,110 @@
 
 ### I2C Advantages
 
+- Only two wires
+- Multiple masters and slaves
+- ACK/NACK gives confirmation of success
+- Hardware less complicated than UART
+- Well known and widely used
+
 ### I2C Disadvantages
+
+- Slower transfer rate than SPI
+- Data frame limited to 8 bits
+- More complicated hardware than SPI
+
+## Universal Asynchronous Receiver/Transmitter (UART)
+
+### UART Basics
+
+- Serially transmit/receive data
+- Sending UART converts parallel data to serial and sends to receiving UART
+- Only two wires needed to transmit between two UARTs
+- Data flows from Tx of transmitting (sending) UART -> Rx pin of receiving UART
+- Transmits data asynchronously (no clock signal)
+- Transmitting UART adds start/stop bits to data packet
+- Receiving UART detects start bit, reads at a frequency known as _baud_ rate
+  - Baud rate - speed data transfer, measured in bits per second (bps)
+  - Both UARTs must operate at within ~10% of same baud rate
+
+### UART Specs
+
+| Specs                  |                                      |
+| ---------------------- | ------------------------------------ |
+| **Wires Used**         | 2                                    |
+| **Maximum Speed**      | Up to 115200 baud, usually 9600 baud |
+| **Synch**              | Asynchronous                         |
+| **Serial or Parallel** | Serial                               |
+| **Max # of Masters**   | 1                                    |
+| **Max # of Slaves**    | 1                                    |
+
+### UART Transmission
+
+#### Sending Data
+
+- Transmitting UART receives data from data bus by devices like CPU, memory, or microcontroller
+- Data is transferred to transmitting UART in parallel form
+- Transmitting UART adds start/stop bits, and parity bit, forming a _data packet_
+- Data is output serially at Tx pin
+
+#### Receiving Data
+
+- Receiving UART reads serially at Rx pin
+- Receiving converts data back into parallel, and removes start/stop and parity bits
+- Receiver transmits data in parallel to data bus on receiving end
+
+#### Data Packets
+
+- Data between UART is delivered in packets
+- Each packet contains:
+  - 1 start bit
+  - 5 to 9 data bits (data frame)
+  - Optional parity bit
+  - 1 or 2 stop bits
+
+##### Start Bit
+
+- Idle transmission line held at high voltage
+- To start transfer, transmitting UART pulls voltage of line high -> low for one cycle
+- Receiving UART detects voltage drop, begins reading packet at baud rate
+
+##### UART Data Frame
+
+- Contains actual data being transferred
+- Parity bit -> 5 to 8 bits long
+- No parity bit -> Can bit 9 bits long
+- Data sent LSB first
+
+##### UART Parity
+
+- Describes evenness or oddness of number
+- Receiving UART counts number of "1" bits and checks if it is even/odd
+- Parity bit can either be:
+  - 0, even parity
+  - 1, odd parity
+- If mismatch between parity and number of odd/even bits, UART knows data is corrupt
+
+##### Stop Bit
+
+- Sending UART ups data transmission line from low -> high voltage for at least two bit transmissions
+
+### UART Data Transmission
+
+1. Put steps here, Slide 83-87
+
+### UART Advantages
+
+- Only two wires
+- No clock signal
+- Parity bit for error checking
+- Structure of data packet can be changes as long as both sides are set up for it
+- Well documented and widely used method
+
+### UART Disadvantages
+
+- Max data frame size of 9 bits
+- No multiple slave/master systems
+- Baud rates must be within 10% of each other
+- Relatively slow
 
 ## End
