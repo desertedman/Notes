@@ -5,19 +5,19 @@
 - [GPIO](#gpio)
   - [LED on a Pi](#led-on-a-pi)
   - [Pulse-Width Modulation](#pulse-width-modulation)
-  - [Analog/Digital Signals](#analogdigital-signals)
+  - [Analog and Digital Signals](#analog-and-digital-signals)
   - [Peripheral Communication](#peripheral-communication)
-    - [Synchronous vs. Asynchronous](#synchronous-vs-asynchronous)
-    - [Serial vs. Parallel Communication](#serial-vs-parallel-communication)
-  - [Serial Peripheral Interface (SPI)](#serial-peripheral-interface-spi)
+    - [Synchronous vs Asynchronous](#synchronous-vs-asynchronous)
+    - [Serial vs Parallel Communication](#serial-vs-parallel-communication)
+  - [Serial Peripheral Interface SPI](#serial-peripheral-interface-spi)
     - [SPI Specs](#spi-specs)
     - [Clock Polarity and Clock Phase](#clock-polarity-and-clock-phase)
     - [Slave Select](#slave-select)
-    - [How SPI Works - MOSI and MISO](#how-spi-works-mosi-and-miso)
+    - [How SPI Works MOSI and MISO](#how-spi-works-mosi-and-miso)
     - [SPI Data Transmission](#spi-data-transmission)
     - [SPI Advantages](#spi-advantages)
     - [SPI Disadvantages](#spi-disadvantages)
-  - [Inter-Integrated Circuit (I2C)](#inter-integrated-circuit-i2c)
+  - [Inter-Integrated Circuit I2C](#inter-integrated-circuit-i2c)
     - [Basics](#basics)
     - [Messages](#messages)
       - [Address Frame](#address-frame)
@@ -26,7 +26,7 @@
     - [I2C Data Transmission](#i2c-data-transmission)
     - [I2C Advantages](#i2c-advantages)
     - [I2C Disadvantages](#i2c-disadvantages)
-  - [Universal Asynchronous Receiver/Transmitter (UART)](#universal-asynchronous-receivertransmitter-uart)
+  - [Universal Asynchronous Receiver and Transmitter UART](#universal-asynchronous-receiver-and-transmitter-uart)
     - [UART Basics](#uart-basics)
     - [UART Specs](#uart-specs)
     - [UART Transmission](#uart-transmission)
@@ -62,7 +62,7 @@
   - Duty Cycle - Percentage of pulse width, out of entire period
   - Effective voltage = volts \* duty cycle
 
-## Analog/Digital Signals
+## Analog and Digital Signals
 
 - ADC - Analog to Digital Converter
 - DAC - Digital to Analog Converter
@@ -79,20 +79,20 @@
   - Inter-Integrated Circuit (I2C)
   - Universal Asynchronous Receiver/Transmitter (UART)
 
-### Synchronous vs. Asynchronous
+### Synchronous vs Asynchronous
 
 - Synchronous - Devices share a clock signal
   - SPI, I2C
 - Asynchronous - No clock signal used
   - UART
 
-### Serial vs. Parallel Communication
+### Serial vs Parallel Communication
 
 - Data (bits) transmitted via parallel or serial
 - Parallel - Bits sent all at same time through separate wires
 - Serial - Bits sent one by one through single wire
 
-## Serial Peripheral Interface (SPI)
+## Serial Peripheral Interface SPI
 
 ### SPI Specs
 
@@ -131,7 +131,7 @@
 - Single SS pin -> SS wire split in parallel to each slave (called _daisy chaining_)
   - All other pins connected via _daisy chaining_
 
-### How SPI Works - MOSI and MISO
+### How SPI Works MOSI and MISO
 
 - Data sent serially
 - Master -> Slave via MOSI
@@ -162,7 +162,7 @@
 - No error checking
 - Only one master
 
-## Inter-Integrated Circuit (I2C)
+## Inter-Integrated Circuit I2C
 
 ### Basics
 
@@ -249,7 +249,7 @@
 - Data frame limited to 8 bits
 - More complicated hardware than SPI
 
-## Universal Asynchronous Receiver/Transmitter (UART)
+## Universal Asynchronous Receiver and Transmitter UART
 
 ### UART Basics
 
@@ -326,7 +326,11 @@
 
 ### UART Data Transmission
 
-1. Put steps here, Slide 83-87
+1. Transmitting UART receives data in parallel from data bus
+2. Transmitting UART adds start/stop and parity bits to data frame
+3. Transmits packet in serial. Receiver samples data line at baud rate
+4. Receiver discards start/stop and parity bits from data frame
+5. Receiver converts serial data back into parallel and transfers to data bus on receiving end
 
 ### UART Advantages
 
