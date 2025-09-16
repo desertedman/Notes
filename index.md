@@ -1,5 +1,7 @@
 # Index
 
+I use [nvim](https://www.lazyvim.org/) btw
+
 <!--toc:start-->
 
 - [Index](#index)

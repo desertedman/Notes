@@ -1,7 +1,8 @@
-# GPIO
+# GPIO Condensed
 
 <!--toc:start-->
-- [GPIO](#gpio)
+
+- [GPIO Condensed](#gpio-condensed)
   - [LED on a Pi](#led-on-a-pi)
   - [Pulse-Width Modulation](#pulse-width-modulation)
   - [Analog and Digital Signals](#analog-and-digital-signals)
@@ -12,16 +13,18 @@
     - [SPI Specs](#spi-specs)
     - [Clock Polarity and Clock Phase](#clock-polarity-and-clock-phase)
     - [Slave Select](#slave-select)
-    - [How SPI Works MOSI and MISO](#how-spi-works-mosi-and-miso)
     - [SPI Data Transmission](#spi-data-transmission)
     - [SPI Advantages](#spi-advantages)
     - [SPI Disadvantages](#spi-disadvantages)
   - [Inter-Integrated Circuit I2C](#inter-integrated-circuit-i2c)
-    - [Basics](#basics)
-    - [Messages](#messages)
-      - [Address Frame](#address-frame)
-      - [Data Frame](#data-frame)
     - [I2C Specs](#i2c-specs)
+    - [Messages](#messages)
+      - [I2C Start Bit](#i2c-start-bit)
+      - [Address Frame](#address-frame)
+      - [Read or Write Bit](#read-or-write-bit)
+      - [I2C ACK Bit](#i2c-ack-bit)
+      - [Data Frame](#data-frame)
+      - [I2C Stop Bit](#i2c-stop-bit)
     - [I2C Data Transmission](#i2c-data-transmission)
     - [I2C Advantages](#i2c-advantages)
     - [I2C Disadvantages](#i2c-disadvantages)
@@ -40,7 +43,7 @@
     - [UART Advantages](#uart-advantages)
     - [UART Disadvantages](#uart-disadvantages)
   - [End](#end)
-<!--toc:end-->
+  <!--toc:end-->
 
 ## LED on a Pi
 
@@ -130,16 +133,6 @@
 - Single SS pin -> SS wire split in parallel to each slave (called _daisy chaining_)
   - All other pins connected via _daisy chaining_
 
-### How SPI Works MOSI and MISO
-
-- Data sent serially
-- Master -> Slave via MOSI
-  - MSB sent first
-- Slave -> Master via MISO
-  LSB sent first
-- Data is sent to and from master and slave in reverse order, so data is
-  formatted the same on both ends
-
 ### SPI Data Transmission
 
 1. Master outputs clock signal
@@ -163,55 +156,13 @@
 
 ## Inter-Integrated Circuit I2C
 
-### Basics
+### I2C Specs
 
-- Two-wire serial comm.
-- Must be connected to _serial data_ (SDA) and _serial clock_ (SCL) lines
-  (called I2C bus)
+- _Serial Data_ (SDA) and _Serial Clock_ (SCL) lines (I2C bus)
 - Each bus has I2C master w/ SDA and SCL lines, connected via dedicated pins
 - Each device has unique address, used as transmitter/receiver to comm. w/
   devices on bus
   - Multiple devices can be on I2C bus
-
-### Messages
-
-- Data transferred in _messages_
-  - Broken up into _frames_ of data
-- Each message has:
-  - Address frame (binary address of slave)
-    - 7 or 10 bit sequence that identifies slave
-  - One or more data frames
-    - In between each frame:
-      - Read/write bits
-        - Specifies whether master sends (low voltage) or requests (high
-          voltage) data
-      - ACK/NACK bits
-        - If address/data frame received, receiver sends ACK -> back to sender
-  - Start/stop conditions
-    - Start condition
-      - SDA switches high to low voltage _before_ SCL switches high to low
-    - Stop condition
-      - SDA switches low to high voltage _after_ SCL switches low to high
-
-#### Address Frame
-
-- Address frame always first frame after start bit
-  - Corresponding slave sends low voltage ACK to master
-  - R/W bit follows address frame
-    - Master send data - R/W -> low voltage
-    - Master request data - R/W -> high voltage
-- Address frame -> R/W bit -> ACK bit
-
-#### Data Frame
-
-- Always 8 bits long, MSB first
-- Followed by ACK/NACK bit
-- Recieved by master/slave, depending on who sent data, before next data frame
-  is sent
-- When finished, master sends stop condition to slave
-  - SCL: low -> high, _then_ SDA: low -> high
-
-### I2C Specs
 
 | Specs                  |                       |
 | ---------------------- | --------------------- |
@@ -224,6 +175,54 @@
 | **Serial or Parallel** | Serial                |
 | **Max # of Masters**   | Unlimited             |
 | **Max # of Slaves**    | 1008                  |
+
+### Messages
+
+- Data transferred in _messages_
+  - Broken up into _frames_ of data
+- Each message has:
+  - Start condition
+  - Address frame (binary address of slave)
+    - 7 or 10 bit sequence that identifies slave
+  - One or more data frames
+    - In between each frame:
+      - Read/write bits
+      - ACK/NACK bits
+  - Stop condition
+
+#### I2C Start Bit
+
+- SDA switches high to low voltage _before_ SCL switches high to low
+
+#### Address Frame
+
+- Address frame always first frame after start bit
+  - Corresponding slave sends low voltage ACK to master
+  - R/W bit follows address frame
+    - Master send data - R/W -> low voltage
+    - Master request data - R/W -> high voltage
+- Address frame -> R/W bit -> ACK bit
+
+#### Read or Write Bit
+
+- Specifies whether master sends (low voltage) or requests (high voltage) data
+
+#### I2C ACK Bit
+
+- If address/data frame received, receiver sends ACK -> back to sender
+
+#### Data Frame
+
+- Always 8 bits long, MSB first
+- Followed by ACK/NACK bit
+- Recieved by master/slave, depending on who sent data, before next data frame
+  is sent
+- When finished, master sends stop condition to slave
+  - SCL: low -> high, _then_ SDA: low -> high
+
+#### I2C Stop Bit
+
+- SDA switches low to high voltage _after_ SCL switches low to high
 
 ### I2C Data Transmission
 
