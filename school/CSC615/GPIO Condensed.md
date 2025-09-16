@@ -124,7 +124,7 @@
 ### SPI Data Transmission
 
 1. Master outputs clock signal
-2. Master drops desired slave's voltage
+2. Master drops desired slave's voltage via SS line
 3. Master -> Slave (MSB first) via MOSI, slave reads bits as received
 4. Slave -> Master (LSB first) via MISO
 
@@ -230,9 +230,8 @@
 
 ### UART Specs
 
-- Sending UART converts parallel to serial and sends to receiving UART
-- Data flows from Tx of transmitting (sending) UART -> Rx pin of receiving UART
-- Transmitting UART adds start/stop bits to data packet
+- Tx (transmission) line
+- Rx (reading) line
 - Receiving UART detects start bit, reads at a frequency known as _baud_ rate
   - Baud rate - speed data transfer, measured in bits per second (bps)
   - Both UARTs must operate at within ~10% of same baud rate
@@ -273,7 +272,8 @@
 
 #### UART Stop Bit
 
-- Sending UART ups data transmission line from low -> high voltage for at least two bit transmissions
+- 1 or 2 bits
+- Sender Tx low -> high voltage for at least two bit transmissions
 
 ### UART Data Transmission
 
