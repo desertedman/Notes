@@ -1,7 +1,8 @@
-# GPIO
+# GPIO Condensed
 
 <!--toc:start-->
-- [GPIO](#gpio)
+
+- [GPIO Condensed](#gpio-condensed)
   - [LED on a Pi](#led-on-a-pi)
   - [Pulse-Width Modulation](#pulse-width-modulation)
   - [Analog and Digital Signals](#analog-and-digital-signals)
@@ -11,36 +12,34 @@
   - [Serial Peripheral Interface SPI](#serial-peripheral-interface-spi)
     - [SPI Specs](#spi-specs)
     - [Clock Polarity and Clock Phase](#clock-polarity-and-clock-phase)
-    - [Slave Select](#slave-select)
-    - [How SPI Works MOSI and MISO](#how-spi-works-mosi-and-miso)
     - [SPI Data Transmission](#spi-data-transmission)
     - [SPI Advantages](#spi-advantages)
     - [SPI Disadvantages](#spi-disadvantages)
   - [Inter-Integrated Circuit I2C](#inter-integrated-circuit-i2c)
-    - [Basics](#basics)
-    - [Messages](#messages)
-      - [Address Frame](#address-frame)
-      - [Data Frame](#data-frame)
     - [I2C Specs](#i2c-specs)
+    - [Messages](#messages)
+      - [I2C Start Bit](#i2c-start-bit)
+      - [I2C Address Frame](#i2c-address-frame)
+      - [I2C Read or Write Bit](#i2c-read-or-write-bit)
+      - [I2C ACK Bit](#i2c-ack-bit)
+      - [Data Frame](#data-frame)
+      - [I2C Stop Bit](#i2c-stop-bit)
     - [I2C Data Transmission](#i2c-data-transmission)
     - [I2C Advantages](#i2c-advantages)
     - [I2C Disadvantages](#i2c-disadvantages)
   - [Universal Asynchronous Receiver and Transmitter UART](#universal-asynchronous-receiver-and-transmitter-uart)
-    - [UART Basics](#uart-basics)
     - [UART Specs](#uart-specs)
     - [UART Transmission](#uart-transmission)
-      - [Sending Data](#sending-data)
-      - [Receiving Data](#receiving-data)
       - [Data Packets](#data-packets)
-        - [Start Bit](#start-bit)
+        - [UART Start Bit](#uart-start-bit)
         - [UART Data Frame](#uart-data-frame)
         - [UART Parity](#uart-parity)
-        - [Stop Bit](#stop-bit)
+        - [UART Stop Bit](#uart-stop-bit)
     - [UART Data Transmission](#uart-data-transmission)
     - [UART Advantages](#uart-advantages)
     - [UART Disadvantages](#uart-disadvantages)
   - [End](#end)
-<!--toc:end-->
+  <!--toc:end-->
 
 ## LED on a Pi
 
@@ -122,28 +121,10 @@
 - Clock phase - Sampling occurs on either first or second edge of cycle,
   regardless of rising or falling
 
-### Slave Select
-
-- Master selects slave by dropping line's voltage
-- Idle, non-transmitting slaves kept at high voltage
-- Multiple SS pins -> each slave connected via dedicated wire
-- Single SS pin -> SS wire split in parallel to each slave (called _daisy chaining_)
-  - All other pins connected via _daisy chaining_
-
-### How SPI Works MOSI and MISO
-
-- Data sent serially
-- Master -> Slave via MOSI
-  - MSB sent first
-- Slave -> Master via MISO
-  LSB sent first
-- Data is sent to and from master and slave in reverse order, so data is
-  formatted the same on both ends
-
 ### SPI Data Transmission
 
 1. Master outputs clock signal
-2. Master drops desired slave's voltage
+2. Master drops desired slave's voltage via SS line
 3. Master -> Slave (MSB first) via MOSI, slave reads bits as received
 4. Slave -> Master (LSB first) via MISO
 
@@ -163,55 +144,15 @@
 
 ## Inter-Integrated Circuit I2C
 
-### Basics
+### I2C Specs
 
-- Two-wire serial comm.
-- Must be connected to _serial data_ (SDA) and _serial clock_ (SCL) lines
-  (called I2C bus)
-- Each bus has I2C master w/ SDA and SCL lines, connected via dedicated pins
+- I2C Bus composed of:
+  - _Serial Data_ (SDA)
+  - _Serial Clock_ (SCL)
+- Each bus has I2C master
 - Each device has unique address, used as transmitter/receiver to comm. w/
   devices on bus
   - Multiple devices can be on I2C bus
-
-### Messages
-
-- Data transferred in _messages_
-  - Broken up into _frames_ of data
-- Each message has:
-  - Address frame (binary address of slave)
-    - 7 or 10 bit sequence that identifies slave
-  - One or more data frames
-    - In between each frame:
-      - Read/write bits
-        - Specifies whether master sends (low voltage) or requests (high
-          voltage) data
-      - ACK/NACK bits
-        - If address/data frame received, receiver sends ACK -> back to sender
-  - Start/stop conditions
-    - Start condition
-      - SDA switches high to low voltage _before_ SCL switches high to low
-    - Stop condition
-      - SDA switches low to high voltage _after_ SCL switches low to high
-
-#### Address Frame
-
-- Address frame always first frame after start bit
-  - Corresponding slave sends low voltage ACK to master
-  - R/W bit follows address frame
-    - Master send data - R/W -> low voltage
-    - Master request data - R/W -> high voltage
-- Address frame -> R/W bit -> ACK bit
-
-#### Data Frame
-
-- Always 8 bits long, MSB first
-- Followed by ACK/NACK bit
-- Recieved by master/slave, depending on who sent data, before next data frame
-  is sent
-- When finished, master sends stop condition to slave
-  - SCL: low -> high, _then_ SDA: low -> high
-
-### I2C Specs
 
 | Specs                  |                       |
 | ---------------------- | --------------------- |
@@ -225,9 +166,46 @@
 | **Max # of Masters**   | Unlimited             |
 | **Max # of Slaves**    | 1008                  |
 
+### Messages
+
+- Data transferred in _messages_
+  - Broken up into _frames_ of data
+- Start -> Address -> R/W -> ACK -> Data -> ACK -> Stop
+- Start -> Address -> R/W -> ACK -> Data -> ACK -> Data -> ACK -> Stop (Multiple data)
+
+#### I2C Start Bit
+
+- SDA high -> low _before_ SCL high -> low
+
+#### I2C Address Frame
+
+- 7 or 10 bit sequence that identifies slave
+- Address frame always first frame after start bit
+  - Corresponding slave sends low voltage ACK to master
+
+#### I2C Read or Write Bit
+
+- Master send data - R/W -> low voltage
+- Master request data - R/W -> high voltage
+
+#### I2C ACK Bit
+
+- If address/data frame received, receiver ACK -> sender
+
+#### Data Frame
+
+- Always 8 bits long, MSB first
+- Followed by ACK/NACK bit
+- Recieved by master/slave, depending on who sent data, before next data frame
+  is sent
+
+#### I2C Stop Bit
+
+- SDA low -> high, _after_ SCL low -> high
+
 ### I2C Data Transmission
 
-1. Master sends start condition to every slave via switching SDA high -> low _before_ SCL high -> low
+1. Master sends start condition to every slave
 2. Master sends each slave address frame, along with R/W bit
 3. Each slave compares address; matching slave sends ACK by dropping voltage for one bit
 4. Master sends or receives data frame
@@ -250,19 +228,13 @@
 
 ## Universal Asynchronous Receiver and Transmitter UART
 
-### UART Basics
+### UART Specs
 
-- Serially transmit/receive data
-- Sending UART converts parallel data to serial and sends to receiving UART
-- Only two wires needed to transmit between two UARTs
-- Data flows from Tx of transmitting (sending) UART -> Rx pin of receiving UART
-- Transmits data asynchronously (no clock signal)
-- Transmitting UART adds start/stop bits to data packet
+- Tx (transmission) line
+- Rx (reading) line
 - Receiving UART detects start bit, reads at a frequency known as _baud_ rate
   - Baud rate - speed data transfer, measured in bits per second (bps)
   - Both UARTs must operate at within ~10% of same baud rate
-
-### UART Specs
 
 | Specs                  |                                      |
 | ---------------------- | ------------------------------------ |
@@ -273,61 +245,41 @@
 | **Max # of Masters**   | 1                                    |
 | **Max # of Slaves**    | 1                                    |
 
-### UART Transmission
-
-#### Sending Data
-
-- Transmitting UART receives data from data bus by devices like CPU, memory, or microcontroller
-- Data is transferred to transmitting UART in parallel form
-- Transmitting UART adds start/stop bits, and parity bit, forming a _data packet_
-- Data is output serially at Tx pin
-
-#### Receiving Data
-
-- Receiving UART reads serially at Rx pin
-- Receiving converts data back into parallel, and removes start/stop and parity bits
-- Receiver transmits data in parallel to data bus on receiving end
-
-#### Data Packets
+### Data Packets
 
 - Data between UART is delivered in packets
-- Each packet contains:
-  - 1 start bit
-  - 5 to 9 data bits (data frame)
-  - Optional parity bit
-  - 1 or 2 stop bits
+- Start -> Data (Size depends on Parity) -> Parity (Optional) -> Stop (1 or 2 bits)
 
-##### Start Bit
+#### UART Start Bit
 
 - Idle transmission line held at high voltage
 - To start transfer, transmitting UART pulls voltage of line high -> low for one cycle
 - Receiving UART detects voltage drop, begins reading packet at baud rate
 
-##### UART Data Frame
+#### UART Data Frame
 
-- Contains actual data being transferred
 - Parity bit -> 5 to 8 bits long
 - No parity bit -> Can bit 9 bits long
 - Data sent LSB first
 
-##### UART Parity
+#### UART Parity
 
-- Describes evenness or oddness of number
 - Receiving UART counts number of "1" bits and checks if it is even/odd
 - Parity bit can either be:
   - 0, even parity
   - 1, odd parity
 - If mismatch between parity and number of odd/even bits, UART knows data is corrupt
 
-##### Stop Bit
+#### UART Stop Bit
 
-- Sending UART ups data transmission line from low -> high voltage for at least two bit transmissions
+- 1 or 2 bits
+- Sender Tx low -> high voltage for at least two bit transmissions
 
 ### UART Data Transmission
 
 1. Transmitting UART receives data in parallel from data bus
 2. Transmitting UART adds start/stop and parity bits to data frame
-3. Transmits packet in serial. Receiver samples data line at baud rate
+3. Transmits packet in serial via Tx. Receiver samples data line at baud rate from Rx
 4. Receiver discards start/stop and parity bits from data frame
 5. Receiver converts serial data back into parallel and transfers to data bus on receiving end
 
