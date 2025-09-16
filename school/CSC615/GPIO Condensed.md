@@ -19,8 +19,8 @@
     - [I2C Specs](#i2c-specs)
     - [Messages](#messages)
       - [I2C Start Bit](#i2c-start-bit)
-      - [Address Frame](#address-frame)
-      - [Read or Write Bit](#read-or-write-bit)
+      - [I2C Address Frame](#i2c-address-frame)
+      - [I2C Read or Write Bit](#i2c-read-or-write-bit)
       - [I2C ACK Bit](#i2c-ack-bit)
       - [Data Frame](#data-frame)
       - [I2C Stop Bit](#i2c-stop-bit)
@@ -146,8 +146,10 @@
 
 ### I2C Specs
 
-- _Serial Data_ (SDA) and _Serial Clock_ (SCL) lines (I2C bus)
-- Each bus has I2C master w/ SDA and SCL lines, connected via dedicated pins
+- I2C Bus composed of:
+  - _Serial Data_ (SDA)
+  - _Serial Clock_ (SCL)
+- Each bus has I2C master
 - Each device has unique address, used as transmitter/receiver to comm. w/
   devices on bus
   - Multiple devices can be on I2C bus
@@ -168,36 +170,27 @@
 
 - Data transferred in _messages_
   - Broken up into _frames_ of data
-- Each message has:
-  - Start condition
-  - Address frame (binary address of slave)
-    - 7 or 10 bit sequence that identifies slave
-  - One or more data frames
-    - In between each frame:
-      - Read/write bits
-      - ACK/NACK bits
-  - Stop condition
+- Start -> Address -> R/W -> ACK -> Data -> ACK -> Stop
+- Start -> Address -> R/W -> ACK -> Data -> ACK -> Data -> ACK -> Stop (Multiple data)
 
 #### I2C Start Bit
 
-- SDA switches high to low voltage _before_ SCL switches high to low
+- SDA high -> low _before_ SCL high -> low
 
-#### Address Frame
+#### I2C Address Frame
 
+- 7 or 10 bit sequence that identifies slave
 - Address frame always first frame after start bit
   - Corresponding slave sends low voltage ACK to master
-  - R/W bit follows address frame
-    - Master send data - R/W -> low voltage
-    - Master request data - R/W -> high voltage
-- Address frame -> R/W bit -> ACK bit
 
-#### Read or Write Bit
+#### I2C Read or Write Bit
 
-- Specifies whether master sends (low voltage) or requests (high voltage) data
+- Master send data - R/W -> low voltage
+- Master request data - R/W -> high voltage
 
 #### I2C ACK Bit
 
-- If address/data frame received, receiver sends ACK -> back to sender
+- If address/data frame received, receiver ACK -> sender
 
 #### Data Frame
 
@@ -208,7 +201,7 @@
 
 #### I2C Stop Bit
 
-- SCL: low -> high, _then_ SDA: low -> high
+- SDA low -> high, _after_ SCL low -> high
 
 ### I2C Data Transmission
 
@@ -237,7 +230,7 @@
 
 ### UART Specs
 
-- Sending UART converts parallel data to serial and sends to receiving UART
+- Sending UART converts parallel to serial and sends to receiving UART
 - Data flows from Tx of transmitting (sending) UART -> Rx pin of receiving UART
 - Transmitting UART adds start/stop bits to data packet
 - Receiving UART detects start bit, reads at a frequency known as _baud_ rate
@@ -253,40 +246,32 @@
 | **Max # of Masters**   | 1                                    |
 | **Max # of Slaves**    | 1                                    |
 
-### UART Transmission
-
-#### Data Packets
+### Data Packets
 
 - Data between UART is delivered in packets
-- Each packet contains:
-  - 1 start bit
-  - 5 to 9 data bits (data frame)
-  - Optional parity bit
-  - 1 or 2 stop bits
+- Start -> Data (Size depends on Parity) -> Parity (Optional) -> Stop (1 or 2 bits)
 
-##### UART Start Bit
+#### UART Start Bit
 
 - Idle transmission line held at high voltage
 - To start transfer, transmitting UART pulls voltage of line high -> low for one cycle
 - Receiving UART detects voltage drop, begins reading packet at baud rate
 
-##### UART Data Frame
+#### UART Data Frame
 
-- Contains actual data being transferred
 - Parity bit -> 5 to 8 bits long
 - No parity bit -> Can bit 9 bits long
 - Data sent LSB first
 
-##### UART Parity
+#### UART Parity
 
-- Describes evenness or oddness of number
 - Receiving UART counts number of "1" bits and checks if it is even/odd
 - Parity bit can either be:
   - 0, even parity
   - 1, odd parity
 - If mismatch between parity and number of odd/even bits, UART knows data is corrupt
 
-##### UART Stop Bit
+#### UART Stop Bit
 
 - Sending UART ups data transmission line from low -> high voltage for at least two bit transmissions
 
