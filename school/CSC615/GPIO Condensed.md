@@ -12,7 +12,6 @@
   - [Serial Peripheral Interface SPI](#serial-peripheral-interface-spi)
     - [SPI Specs](#spi-specs)
     - [Clock Polarity and Clock Phase](#clock-polarity-and-clock-phase)
-    - [Slave Select](#slave-select)
     - [SPI Data Transmission](#spi-data-transmission)
     - [SPI Advantages](#spi-advantages)
     - [SPI Disadvantages](#spi-disadvantages)
@@ -29,16 +28,13 @@
     - [I2C Advantages](#i2c-advantages)
     - [I2C Disadvantages](#i2c-disadvantages)
   - [Universal Asynchronous Receiver and Transmitter UART](#universal-asynchronous-receiver-and-transmitter-uart)
-    - [UART Basics](#uart-basics)
     - [UART Specs](#uart-specs)
     - [UART Transmission](#uart-transmission)
-      - [Sending Data](#sending-data)
-      - [Receiving Data](#receiving-data)
       - [Data Packets](#data-packets)
-        - [Start Bit](#start-bit)
+        - [UART Start Bit](#uart-start-bit)
         - [UART Data Frame](#uart-data-frame)
         - [UART Parity](#uart-parity)
-        - [Stop Bit](#stop-bit)
+        - [UART Stop Bit](#uart-stop-bit)
     - [UART Data Transmission](#uart-data-transmission)
     - [UART Advantages](#uart-advantages)
     - [UART Disadvantages](#uart-disadvantages)
@@ -125,14 +121,6 @@
 - Clock phase - Sampling occurs on either first or second edge of cycle,
   regardless of rising or falling
 
-### Slave Select
-
-- Master selects slave by dropping line's voltage
-- Idle, non-transmitting slaves kept at high voltage
-- Multiple SS pins -> each slave connected via dedicated wire
-- Single SS pin -> SS wire split in parallel to each slave (called _daisy chaining_)
-  - All other pins connected via _daisy chaining_
-
 ### SPI Data Transmission
 
 1. Master outputs clock signal
@@ -217,16 +205,14 @@
 - Followed by ACK/NACK bit
 - Recieved by master/slave, depending on who sent data, before next data frame
   is sent
-- When finished, master sends stop condition to slave
-  - SCL: low -> high, _then_ SDA: low -> high
 
 #### I2C Stop Bit
 
-- SDA switches low to high voltage _after_ SCL switches low to high
+- SCL: low -> high, _then_ SDA: low -> high
 
 ### I2C Data Transmission
 
-1. Master sends start condition to every slave via switching SDA high -> low _before_ SCL high -> low
+1. Master sends start condition to every slave
 2. Master sends each slave address frame, along with R/W bit
 3. Each slave compares address; matching slave sends ACK by dropping voltage for one bit
 4. Master sends or receives data frame
@@ -249,19 +235,14 @@
 
 ## Universal Asynchronous Receiver and Transmitter UART
 
-### UART Basics
+### UART Specs
 
-- Serially transmit/receive data
 - Sending UART converts parallel data to serial and sends to receiving UART
-- Only two wires needed to transmit between two UARTs
 - Data flows from Tx of transmitting (sending) UART -> Rx pin of receiving UART
-- Transmits data asynchronously (no clock signal)
 - Transmitting UART adds start/stop bits to data packet
 - Receiving UART detects start bit, reads at a frequency known as _baud_ rate
   - Baud rate - speed data transfer, measured in bits per second (bps)
   - Both UARTs must operate at within ~10% of same baud rate
-
-### UART Specs
 
 | Specs                  |                                      |
 | ---------------------- | ------------------------------------ |
@@ -274,19 +255,6 @@
 
 ### UART Transmission
 
-#### Sending Data
-
-- Transmitting UART receives data from data bus by devices like CPU, memory, or microcontroller
-- Data is transferred to transmitting UART in parallel form
-- Transmitting UART adds start/stop bits, and parity bit, forming a _data packet_
-- Data is output serially at Tx pin
-
-#### Receiving Data
-
-- Receiving UART reads serially at Rx pin
-- Receiving converts data back into parallel, and removes start/stop and parity bits
-- Receiver transmits data in parallel to data bus on receiving end
-
 #### Data Packets
 
 - Data between UART is delivered in packets
@@ -296,7 +264,7 @@
   - Optional parity bit
   - 1 or 2 stop bits
 
-##### Start Bit
+##### UART Start Bit
 
 - Idle transmission line held at high voltage
 - To start transfer, transmitting UART pulls voltage of line high -> low for one cycle
@@ -318,7 +286,7 @@
   - 1, odd parity
 - If mismatch between parity and number of odd/even bits, UART knows data is corrupt
 
-##### Stop Bit
+##### UART Stop Bit
 
 - Sending UART ups data transmission line from low -> high voltage for at least two bit transmissions
 
@@ -326,7 +294,7 @@
 
 1. Transmitting UART receives data in parallel from data bus
 2. Transmitting UART adds start/stop and parity bits to data frame
-3. Transmits packet in serial. Receiver samples data line at baud rate
+3. Transmits packet in serial via Tx. Receiver samples data line at baud rate from Rx
 4. Receiver discards start/stop and parity bits from data frame
 5. Receiver converts serial data back into parallel and transfers to data bus on receiving end
 
