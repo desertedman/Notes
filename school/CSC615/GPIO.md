@@ -1,4 +1,4 @@
-# GPIO Condensed
+# GPIO
 
 <!--toc:start-->
 
